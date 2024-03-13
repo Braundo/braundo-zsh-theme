@@ -1,7 +1,6 @@
-# af-magic.zsh-theme
+# braundo.zsh-theme
 #
-# Author: Andy Fleming
-# URL: http://andyfleming.com/
+# Author: Aaron Braundmeier
 
 
 # Then set your primary prompt
