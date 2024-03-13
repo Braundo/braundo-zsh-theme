@@ -1,9 +1,9 @@
 ### Manual installation
 
-First, download the theme into [`Oh My Zsh`](https://github.com/robbyrussell/oh-my-zsh)'s custom theme folder:
+First, download the theme into [`Oh My Zsh`](https://github.com/robbyrussell/oh-my-zsh)'s theme folder:
 
 ```
-curl https://github.com/braundo/braundo-zsh-theme/main/braundo.zsh-theme -Lo ~/.oh-my-zsh/themes/braundo.zsh-theme
+curl https://raw.githubusercontent.com/Braundo/braundo-zsh-theme/main/braundo.zsh-theme -Lo ~/.oh-my-zsh/themes/braundo.zsh-theme
 ```
 
 Edit your `~/.zshrc`:
