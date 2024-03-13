@@ -18,4 +18,4 @@ Then apply the theme:
 source ~/.zshrc
 ```
 
-![screenshot](screenshot.jpg?raw=true)
+![screenshot](ui-screenshot.jpg?raw=true)
