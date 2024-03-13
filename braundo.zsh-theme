@@ -1,54 +1,44 @@
-# braundo.zsh-theme
-#
-# Author: Aaron Braundmeier
+# Straightforward theme with username, PWD, git status, and timestamp.
 
+# Directory info.
+local current_dir='${PWD/#$HOME/~}'
 
-# Then set your primary prompt
-PROMPT="
-${reset_color}╭─ ${FG[123]}%~ ${FG[248]}\$(git_prompt_info)\$(hg_prompt_info)%{$reset_color%}
-╰─➤  "
+# VCS
+YS_VCS_PROMPT_PREFIX1=" %{$fg[white]%}on%{$reset_color%} "
+YS_VCS_PROMPT_PREFIX2="%{$fg[magenta]%} "
+YS_VCS_PROMPT_SUFFIX="%{$reset_color%}"
+YS_VCS_PROMPT_DIRTY=" %{$fg[red]%}✖︎"
+YS_VCS_PROMPT_CLEAN=" %{$fg[green]%}●"
 
+# Git info.
+local git_info='$(git_prompt_info)'
+ZSH_THEME_GIT_PROMPT_PREFIX="${YS_VCS_PROMPT_PREFIX1}${YS_VCS_PROMPT_PREFIX2}"
+ZSH_THEME_GIT_PROMPT_SUFFIX="$YS_VCS_PROMPT_SUFFIX"
+ZSH_THEME_GIT_PROMPT_DIRTY="$YS_VCS_PROMPT_DIRTY"
+ZSH_THEME_GIT_PROMPT_CLEAN="$YS_VCS_PROMPT_CLEAN"
 
-
-# right prompt: current timestamp in green
-RPS1="${FG[084]}%*%{$reset_color%}"
-
-# git settings
-function git_prompt_info() {
-  ref=$(git symbolic-ref HEAD 2> /dev/null) || return
-
-  # Checks if working tree is dirty
-  local STATUS=''
-  local FLAGS
-  FLAGS=('--porcelain')
-  if [[ "$(command git config --get oh-my-zsh.hide-dirty)" != "1" ]]; then
-    if [[ $POST_1_7_2_GIT -gt 0 ]]; then
-      FLAGS+='--ignore-submodules=dirty'
-    fi
-    if [[ "$DISABLE_UNTRACKED_FILES_DIRTY" == "true" ]]; then
-      FLAGS+='--untracked-files=no'
-    fi
-    STATUS=$(command git status ${FLAGS} 2> /dev/null | tail -n1)
-  fi
-
-  if [[ -n $STATUS ]]; then
-    GIT_PROMPT_COLOR="$ZSH_THEME_GIT_PROMPT_DIRTY"
-    GIT_DIRTY_STAR="${FG[214]}*$reset_color"
-  else
-    GIT_PROMPT_COLOR="$ZSH_THEME_GIT_PROMPT_CLEAN"
-    unset GIT_DIRTY_STAR
-  fi
-
-  echo "$GIT_PROMPT_COLOR$ZSH_THEME_GIT_PROMPT_PREFIX$(current_branch)$GIT_DIRTY_STAR$ZSH_THEME_GIT_PROMPT_SUFFIX"
+# HG info
+local hg_info='$(ys_hg_prompt_info)'
+ys_hg_prompt_info() {
+	if [ -d '.hg' ]; then
+		echo -n "${YS_VCS_PROMPT_PREFIX1}hg${YS_VCS_PROMPT_PREFIX2}"
+		echo -n $(hg branch 2>/dev/null)
+		if [ -n "$(hg status 2>/dev/null)" ]; then
+			echo -n "$YS_VCS_PROMPT_DIRTY"
+		else
+			echo -n "$YS_VCS_PROMPT_CLEAN"
+		fi
+		echo -n "$YS_VCS_PROMPT_SUFFIX"
+	fi
 }
 
-
-ZSH_THEME_GIT_PROMPT_PREFIX=" ‹"
-ZSH_THEME_GIT_PROMPT_CLEAN=""
-ZSH_THEME_GIT_PROMPT_DIRTY=""
-ZSH_THEME_GIT_PROMPT_SUFFIX="${FG[248]}›$reset_color%}"
-
-
-# virtualenv settings
-ZSH_THEME_VIRTUALENV_PREFIX=" ${FG[075]}["
-ZSH_THEME_VIRTUALENV_SUFFIX="]%{$reset_color%}"
+# Prompt
+PROMPT="
+%{$terminfo[bold]$fg[blue]%}╭──%{$reset_color%} \
+%{$fg[cyan]%}%n \
+%{$fg[white]%}in \
+%{$fg[yellow]%}${current_dir}%{$reset_color%}\
+${hg_info}\
+${git_info} \
+%{$fg[white]%}[%*]
+%{$terminfo[bold]$fg[blue]%}╰─➤ %{$reset_color%}"
